@@ -2,10 +2,9 @@
 #
 # IMPORTANT: Do not create world writable files or directories.
 # This is a common source of Android security bugs.
-#
 
 on boot
-# permission for Input Device(Touchkey).
+# Permission for Input Device(Touchkey).
     chmod 0660 /sys/class/input/input2/enabled
     chown system system /sys/class/input/input2/enabled
     chown radio system /sys/class/sec/sec_touchkey/touch_sensitivity
@@ -13,7 +12,8 @@ on boot
     chown system radio /sys/class/sec/sec_touchkey/glove_mode
     chown system radio /sys/class/sec/sec_touchkey/flip_mode
     chown system radio /sys/class/sec/sec_touchkey/boost_level
-# permission for Input Device(Wacom).
+
+# Permission for Input Device(Wacom).
     chmod 0660 /sys/class/input/input3/enabled
     chown system system /sys/class/input/input3/enabled
     chown system radio /sys/class/sec/sec_epen/epen_firm_update
@@ -26,7 +26,7 @@ on boot
     chown system radio /sys/class/sec/sec_epen/epen_saving_mode
     chown system radio /sys/class/sec/sec_epen/boost_level
 
-# permissions for bluetooth.
+# Permissions for bluetooth.
     setprop ro.bt.bdaddr_path "/efs/bluetooth/bt_addr"
     chown bluetooth net_bt_stack ro.bt.bdaddr_path
     chown bluetooth net_bt_stack /dev/ttyHS0
@@ -35,7 +35,7 @@ on boot
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
 
-# bluetooth LPM
+# Bluetooth LPM
     chmod 0660 /proc/bluetooth/sleep/lpm
     chmod 0220 /proc/bluetooth/sleep/btwrite
     chown bluetooth net_bt_stack /proc/bluetooth/sleep/lpm
@@ -44,47 +44,43 @@ on boot
     chown bluetooth bluetooth /dev/btlock
 
 on fs
-
 # Support Preload install apks
     mkdir /preload 0771 system system
   
-#For Absolute Persistence Partition 
-       
-     mkdir /persdata 0755 system system 
-     mkdir /persdata/absolute 0750 system system 
-  
-     wait /dev/block/platform/msm_sdcc.1/by-name/persdata 
-     check_fs /dev/block/platform/msm_sdcc.1/by-name/persdata ext4 
-     mount ext4 /dev/block/platform/msm_sdcc.1/by-name/persdata /persdata/absolute nosuid nodev barrier=1 
-      
-     chown system system /persdata 
-     chmod 0755 /persdata 
-     chown system system /persdata/absolute 
+# For Absolute Persistence Partition
+     mkdir /persdata 0755 system system
+     mkdir /persdata/absolute 0750 system system
+     wait /dev/block/platform/msm_sdcc.1/by-name/persdata
+     check_fs /dev/block/platform/msm_sdcc.1/by-name/persdata ext4
+     mount ext4 /dev/block/platform/msm_sdcc.1/by-name/persdata /persdata/absolute nosuid nodev barrier=1
+     chown system system /persdata
+     chmod 0755 /persdata
+     chown system system /persdata/absolute
      chmod 0750 /persdata/absolute
 
-# bluetooth dhcp config
-service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
+# Bluetooth dhcp config
+    service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
     class main
- disabled
- oneshot
+    disabled
+    oneshot
 
 service iprenew_bt-pan /system/bin/dhcpcd -n
     class late_start
- disabled
- oneshot
+    disabled
+    oneshot
 
-# service for TZPR provisioning version check app
+# Service for TZPR provisioning version check app
 service scranton_RD /system/bin/scranton_RD
     class main
     user root
     disabled
     oneshot
 
-# start for TZPR provisioning version check app
+# Start for TZPR provisioning version check app
 on property:sys.qseecomd.enable=true
     start scranton_RD
 
-# umount service
+# Umount service
 service umount_service /system/bin/umount /preload
     disabled
     oneshot
@@ -98,7 +94,7 @@ on property:persist.sys.storage_preload=0
     start umount_service
 
 # TODO: replace it with device's DEXPREOPT_BOOT_JARS
-# bootchecker
+# Bootchecker
 service bootchecker /system/bin/bootchecker
     class late_start
     user system
@@ -111,4 +107,3 @@ service ipsec-daemon /system/bin/IPSecService
     socket ipsec_socket stream 660 root system
     user root
     group system
-

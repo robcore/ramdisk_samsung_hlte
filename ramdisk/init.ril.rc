@@ -25,16 +25,12 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-#
 # start ril-daemon only for targets on which radio is present
-#
-
 on property:ro.baseband=apq
     setprop ro.radio.noril yes
     stop ril-daemon
-#
+
 # start qmuxd and qmiproxy for appropriate targets
-#
 on property:ro.baseband=msm
     start qmuxd
 
@@ -68,15 +64,11 @@ on property:persist.radio.sglte_csfb=true
     stop qmiproxy
     setprop persist.radio.voice.modem.index 0
 
-#
 # start netmgrd
-#
 on property:ro.use_data_netmgrd=true
     start netmgrd
 
-#
 # start multiple rilds based on multisim property
-#
 on property:persist.radio.multisim.config=dsds
     stop ril-daemon
     start ril-daemon
