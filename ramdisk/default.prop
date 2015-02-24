@@ -8,3 +8,4 @@ ro.debuggable=1
 ro.adb.secure=0
 persist.sys.strict_op_enable=false
 persist.sys.whitelist=/system/etc/whitelist_appops.xml
+ro.securestorage.support=false
