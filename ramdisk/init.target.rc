@@ -32,14 +32,6 @@ on early-init
     mkdir /firmware-modem 0771 system system
     symlink /data/tombstones /tombstones
 
-# on init
-#    export BOOTCLASSPATH ${BOOTCLASSPATH}:/system/framework/oem-services.jar:/system/framework/WfdCommon.jar:/system/framework/qcmediaplayer.jar
-#    export BOOTCLASSPATH ${BOOTCLASSPATH}:/system/framework/oem-services.jar:/system/framework/WfdCommon.jar:/system/framework/qcmediaplayer.jar:/system/framework/org.codeaurora.Performance.jar
-
-# import cne init file
-# on post-fs
-#    export LD_PRELOAD /vendor/lib/libNimsWrap.so
-
 on fs
     write /sys/devices/msm_sdcc.1/mmc_host/mmc0/power/control on
     write /sys/devices/msm_sdcc.1/mmc_host/mmc1/power/control on
@@ -164,12 +156,6 @@ service qcamerasvr /system/bin/mm-qcamera-daemon
     user camera
     group camera system inet input graphics radio sdcard_rw sdcard_r media_rw shell log
 
-#start gesture server as daemon
-service qgesturesvr /system/bin/mm-gesture-daemon
-    class late_start
-    user system
-    group system camera input graphics net_bt_stack
-
 #start GNSS/Sensor interface daemon
 service gsiff_daemon /system/bin/gsiff_daemon
     class late_start
@@ -181,34 +167,20 @@ service qrngd /system/bin/qrngd -f
     user root
     group root
 
-service qrngp /system/bin/qrngp
+service qseecomd /system/bin/qseecomd
+    class core
+    user root
+    group root
+
+service qosmgrd /system/bin/qosmgr /system/etc/qosmgr_rules.xml
+    user system
+    group system
+    disabled
+
+service thermal-engine /system/bin/thermal-engine
     class main
     user root
     group root
-    oneshot
-    disabled
-
-on property:sys.boot_completed=1
-    start qrngp
-
-service qseecomd /system/bin/qseecomd
-   class core
-   user root
-   group root
-
-service mpdecision /system/bin/mpdecision --avg_comp
-   user root
-   disabled
-
-service qosmgrd /system/bin/qosmgr /system/etc/qosmgr_rules.xml
-   user system
-   group system
-   disabled
-
-service thermal-engine /system/bin/thermal-engine
-   class main
-   user root
-   group root
 
 service security-check1 /sbin/security_boot_check system
     class core
@@ -219,19 +191,14 @@ service security-check2 /sbin/security_boot_check recovery
     oneshot
 
 service time_daemon /system/bin/time_daemon
-   class late_start
-   user root
-   group root
+    class late_start
+    user root
+    group root
 
 service adsprpcd /system/bin/adsprpcd
-   class main
-   user media
-   group media
-
-service audiod /system/bin/audiod
-   class late_start
-   user system
-   group system
+    class main
+    user media
+    group media
 
 service usf_tester /system/bin/usf_tester
     user system
@@ -271,18 +238,18 @@ service usf-post-boot /system/bin/sh /system/etc/usf_post_boot.sh
 
 service prepare-mobicore /system/bin/sh /system/bin/mobicore-presetup.sh
     class core
-	user root
-	group root
-	oneshot
+    user root
+    group root
+    oneshot
 
 service run-mobicore /system/bin/sh /system/bin/mobicore-startup.sh
-	class core
-	user system
-	group system
+    class core
+    user system
+    group system
 
 on property:init.svc.bootanim=stopped
     start usf-post-boot
-	start run-mobicore
+    start run-mobicore
 
 service imsqmidaemon /system/bin/imsqmidaemon
     class main
@@ -307,10 +274,10 @@ on property:sys.ims.QMI_DAEMON_STATUS=1
     start imsdatadaemon
 
 service ims_rtp_daemon /system/bin/ims_rtp_daemon
-   class main
-   user system
-   group radio net_raw diag qcom_diag log
-   disabled
+    class main
+    user system
+    group radio net_raw diag qcom_diag log
+    disabled
 
 on property:sys.ims.DATA_DAEMON_STATUS=1
     start ims_rtp_daemon
@@ -324,11 +291,10 @@ service ppd /system/bin/mm-pp-daemon
 on property:init.svc.surfaceflinger=stopped
     stop ppd
 
-# SecEDS
 service TvoutService_C /system/bin/bintvoutservice
-     class main
-     user system
-     group graphics
+    class main
+    user system
+    group graphics
 
 on property:ro.SecEDS.enable=false
     stop TvoutService_C
