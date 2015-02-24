@@ -121,7 +121,7 @@ access()
 {
    device=$(adb shell getprop ro.boot.boot_recovery | tr -d '\r')
 
-   if [ ! "$device" ]; then
+   if [ "$device" = "" ]; then
       echo "--- device not accessible ---"
       exit 0; fi
 }
