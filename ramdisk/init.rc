@@ -33,6 +33,7 @@ on init
     exec /sbin/ffu -u
     sysclktz 0
     loglevel 3
+    setenforce 0
 
 # for audit message
     chown system system /proc/avc_msg
