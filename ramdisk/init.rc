@@ -787,8 +787,6 @@ on boot
 # Increased technology maximums should be reflected here.
     write /proc/sys/net/core/rmem_max  1048576
     write /proc/sys/net/core/wmem_max  2097152
-	
-	write /sys/block/mmcblk0/queue/scheduler noop
 
     class_start core
     class_start main
@@ -1214,6 +1212,3 @@ service createsystemfile /system/bin/createsystemfile
     group system
     disabled
     oneshot
-
-on property:sys.boot_completed=1
-    write /sys/block/mmcblk0/queue/scheduler cfq
