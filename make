@@ -11,6 +11,7 @@ info()
    echo
    echo General options:
    echo '--build     - start building kernel from source'
+   echo '--rebuild   - delete zImage to trigger rebuilding'
    echo '--clean     - remove output directory'
    echo
    echo ADB options:
@@ -198,6 +199,13 @@ case $1 in
 --build)
    check
    variable
+   build_kernel
+   build_ramdisk
+   ;;
+--rebuild)
+   check
+   variable
+   rm -f $build/kernel/arch/arm/boot/zImage
    build_kernel
    build_ramdisk
    ;;
